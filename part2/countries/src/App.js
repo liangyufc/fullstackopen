@@ -1,5 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react'
 import axios from 'axios'
+
+import Countries from './components/Countries'
+import CountryData from './components/CountryData'
 
 const App = () => {
   const [filter, setFilter] = useState('')
@@ -14,15 +17,30 @@ const App = () => {
       })
   }, [])
 
+  const handleClick = (event) => {
+    setFilter(event.target.id)
+  }
+
   const countriesToShow = filter === ''
     ? countries.filter(country => country.name === '')
-    : countries.filter((country) => country.name.common.toLowerCase().includes(filter.toLowerCase()))
-  console.log('search filter: ', countriesToShow)
+    : countries.filter(country => country.name.common.toLowerCase().includes(filter.toLowerCase()))
+  // console.log('search filter: ', countriesToShow)
+  // console.log('length: ', countriesToShow.length)
 
   return (
     <>
       <div>
         find countries <input value={filter} onChange={({target}) => setFilter(target.value)}/>
+      </div>
+      <div>
+        {countriesToShow.length > 10
+         ? 'Too many countries, specify another filter'
+         : <Countries countriesToShow={countriesToShow} handleClick={handleClick}/>}
+      </div>
+      <div>
+        {countriesToShow.length === 1
+         ? <CountryData country={countriesToShow[0]}/>
+         : null}
       </div>
     </>
   )
